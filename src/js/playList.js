@@ -12,48 +12,31 @@
   // optenemos las peliculas 3D desde el servidor 
     const dList = await getData('https://yts.mx/api/v2/list_movies.json?quality=3D')
     const genresList = await getData('https://yts.mx/api/v2/list_movies.json?genres')
-
     
     console.log(dList)
 
+  
+ 
     //CREACION DE TEMPLATES
   // tomar un texto base para comvertirlo en un texto programable
-  function playListTemplate(movie) {
-
-
-    return (
-      ` 
-      <li class="playlistFriends-item">
-      <a href="#">
-      <img src="${movie.medium_cover_image}">
-      <span>
-      ${movie.title}
-      </span>
-    </a>
-  </li>
-      `
-    )
+  function createTemplate(HTMLString) {
+    // $containerFriends.innerHTML += HTMLString;
+    const html = document.implementation.createHTMLDocument();
+    html.body.innerHTML = HTMLString;
+    return html.body.children[0];
+  }
+  function addEventClick($element) {
+    $element.addEventListener('click', () => {
+      alert('click')
+    })
   }
 
-  //////////////////////////////////////////////////////////////////////////////
-  //pasa los datos obtenidos por un forEach para poder mostrarlos en pantalla
-  // TODO EN 3D
-  const $containerlist = document.getElementById('playList3D')
-  
-  dList.data.movies.forEach((movie) => {
-   
-    const HTMLString = playListTemplate(movie);
-		$containerlist.innerHTML += HTMLString;
 
-  })
 
-//////////////////////////////////////////////////////////////////////////////
-  // LO ULTIMO FAVORITAS
-  // vemos el mismo resultado que lo anterior, aunque que con un codigo mas legible
-  
-  function playlistFriendsTemplate(movie) {
+  //PELIS 3D 
+  function playListTemplate(movie) {
     return (
-      `
+      ` 
       <li class="playlistFriends-item">
       <a href="#">
       <img src="${movie.medium_cover_image}">
@@ -65,19 +48,46 @@
       `
       )
     }
-    // esto lo hacemos para hacer la funcion mas dinamica
+    
+  const $containerlist = document.getElementById('playList3D')
+
+  function renderMovieList2(list, $container) {
+    list.forEach((movie) => {
+      const HTMLString = playListTemplate(movie);
+      const movieElement = createTemplate(HTMLString);
+      $container.append(movieElement);
+      addEventClick(movieElement);
+    });
+  }
+  
+  renderMovieList2(dList.data.movies, $containerlist);
+
+//////////////////////////////////////////////////////////////////////////////
+  // LO ULTIMO FAVORITAS
+  
+  function playlistFriendsTemplate(movie) {
+    return (
+      `
+      <li class="playlistFriends-item">
+      <a href="#}">
+      <img src="${movie.medium_cover_image}">
+      <span>
+      ${movie.title}
+      </span>
+      </a>
+      </li>
+      `
+      )
+    }
     
   const $containerFriends = document.getElementById('playlistFriends');
   
-  function createTemplate(HTMLString) {
-      const html = document.implementation.createHTMLDocument();
-      $containerFriends.innerHTML += HTMLString;
-    }
-    
-  function renderMovieList(list, $container) {
+    function renderMovieList(list, $container) {
       list.forEach((movie) => {
         const HTMLString = playlistFriendsTemplate(movie);
         const movieElement = createTemplate(HTMLString);
+        $container.append(movieElement);
+        addEventClick(movieElement);
       });
     }
     
